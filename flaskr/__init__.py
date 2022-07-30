@@ -3,8 +3,9 @@ import json
 
 from flask import Flask, request, jsonify
 from flasgger import Swagger, LazyString, LazyJSONEncoder
-from importlib_metadata import distribution
+from flask_caching import Cache
 from flaskr.scrape import get_all_disruptions, BASE_URL, DISRUPTIONS_URL
+from flaskr import config
 
 
 URL = f"{BASE_URL}/{DISRUPTIONS_URL}"
@@ -21,7 +22,7 @@ def create_app(test_config=None):
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
+        app.config.from_object(config)
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -53,7 +54,12 @@ def create_app(test_config=None):
     # Initialize swagger documentation
     Swagger(app, template=template)
 
+    # Initialize Cache
+    cache = Cache(app)
+
+    # Create Endpoint
     @app.route("/v1/disruptions")
+    @cache.cached(timeout=86400)
     def service_disruptions():
         """
         file: ../openapi/disruptions.yml

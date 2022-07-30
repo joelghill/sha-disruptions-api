@@ -7,6 +7,8 @@ name = "pypi"
 pytest = "*"
 flask = "2.1"
 flasgger = "*"
+beautifulsoup4 = "*"
+requests = "*"
 
 [dev-packages]
 black = "*"

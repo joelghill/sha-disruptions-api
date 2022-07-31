@@ -10,6 +10,7 @@ flasgger = "*"
 beautifulsoup4 = "*"
 requests = "*"
 flask-caching = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"

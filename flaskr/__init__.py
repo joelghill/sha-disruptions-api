@@ -2,6 +2,7 @@ import os
 import json
 
 from flask import Flask, request, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_caching import Cache
 from flaskr.scrape import get_all_disruptions, BASE_URL, DISRUPTIONS_URL
@@ -26,6 +27,8 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # ensure the instance folder exists
     try:

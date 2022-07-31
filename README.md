@@ -17,6 +17,11 @@ export FLASK_ENV=development
 flask run
 ``` 
 
+## Production Run Command
+```
+gunicorn wsgi:app
+```
+
 ## Environment
 Relies on the following variables existing in the local environment:
 ```

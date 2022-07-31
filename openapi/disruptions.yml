@@ -31,7 +31,12 @@ definitions:
       disruption:
         type: string
         example: "Local Service Disruptions"
-    
+
+summary: Returns a list of SHA service disruptions
+description: SHA disruption details include community name, facility name, etc.
+tags:
+  - Service Disruptions
+
 responses:
   200:
     description: A list of SHA service disruptions

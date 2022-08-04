@@ -2,7 +2,8 @@ import requests
 from datetime import datetime
 from typing import Any, List
 from bs4 import BeautifulSoup
-from flaskr.sha import ServiceDisruption, ServiceDisruptionsPage
+from flaskr.sha import CommunityLocation, ServiceDisruption, ServiceDisruptionsPage
+from flaskr.locations import COMMUNITY_LOCATIONS
 
 
 BASE_URL = "https://www.saskhealthauthority.ca"
@@ -10,13 +11,12 @@ DISRUPTIONS_URL = "news-events/service-disruptions"
 
 
 def __clean_text(html_text: str):
-    """ Cleans extra whitespace from element
-    """
+    """Cleans extra whitespace from element"""
     return " ".join(html_text.split())
 
 
 def __parse_disruption(disruption) -> ServiceDisruption:
-    """ Helper function to parse the HTML of a single disruption listing
+    """Helper function to parse the HTML of a single disruption listing
 
     Args:
         disruption (beautiful soup): A disruption element as found with beautiful soup
@@ -27,7 +27,7 @@ def __parse_disruption(disruption) -> ServiceDisruption:
     """
 
     ## Title
-    title = ''
+    title = ""
     title_elem = disruption.find(class_="c-teaser__title")
 
     if title_elem:
@@ -50,9 +50,7 @@ def __parse_disruption(disruption) -> ServiceDisruption:
         end_text = times[1].attrs.get("datetime")
 
     # Format 2022-04-02T01:01:00Z
-    start = (
-        datetime.strptime(start_text, "%Y-%m-%dT%H:%M:%SZ") if start_text else None
-    )
+    start = datetime.strptime(start_text, "%Y-%m-%dT%H:%M:%SZ") if start_text else None
     end = datetime.strptime(end_text, "%Y-%m-%dT%H:%M:%SZ") if end_text else None
 
     # Community information
@@ -69,6 +67,16 @@ def __parse_disruption(disruption) -> ServiceDisruption:
         region = __clean_text(tags[2].string)
         community = __clean_text(tags[3].string)
 
+    # Get location
+    location_data = COMMUNITY_LOCATIONS.get(community)
+    location = (
+        CommunityLocation(
+            latitude=location_data["latitude"], longitude=location_data["longitude"]
+        )
+        if location_data
+        else None
+    )
+
     # Build object
     return ServiceDisruption(
         start_date=start.isoformat() if start else None,
@@ -79,18 +87,19 @@ def __parse_disruption(disruption) -> ServiceDisruption:
         community_name=community,
         region_name=region,
         disruption=disruption_type,
+        location=location
     )
-    
+
 
 def parse_disruptions_page(page: Any) -> ServiceDisruptionsPage:
-    """ Parses a single page of HTML into a service disruptions page object
+    """Parses a single page of HTML into a service disruptions page object
 
     Args:
         base_url (str): Base URL for all links scraped in page
         page (Any): The raw page HTML
 
     Returns:
-        ServiceDisruptionsPage: An object representing a page of disruptions 
+        ServiceDisruptionsPage: An object representing a page of disruptions
     """
 
     soup = BeautifulSoup(page, "html.parser")

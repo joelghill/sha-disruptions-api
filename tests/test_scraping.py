@@ -13,3 +13,8 @@ def test_last_page():
     page = parse_disruptions_page(last_page)
     assert page.next == None
     assert len(page.disruptions) == 6
+
+
+    assert page.disruptions[5].location.latitude == 50.44876
+    assert page.disruptions[5].location.longitude == -104.61731
+    assert page.disruptions[5].community_name == "Regina"

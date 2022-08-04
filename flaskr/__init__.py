@@ -47,7 +47,7 @@ def create_app(test_config=None):
                 "email": "joelghill@protonmail.me",
                 "url": "https://github.com/joelghill",
             },
-            "version": "1.0.0",
+            "version": "1.1.0",
         },
         "host": LazyString(lambda: request.host),
         "schemes": [LazyString(lambda: "https" if request.is_secure else "http")],

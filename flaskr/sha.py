@@ -3,6 +3,12 @@ from datetime import datetime
 
 from dataclasses import dataclass
 
+@dataclass
+class CommunityLocation:
+    """ Class representing a community location
+    """
+    latitude: float;
+    longitude: float;
 
 @dataclass
 class ServiceDisruption:
@@ -18,6 +24,8 @@ class ServiceDisruption:
     facility_name: Optional[str]
     community_name: Optional[str]
     region_name: Optional[str]
+    
+    location: Optional[CommunityLocation]
 
     disruption: Optional[str]
 

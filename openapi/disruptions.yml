@@ -28,6 +28,16 @@ definitions:
       region_name:
         type: string
         example: "Southeast"
+      location:
+        type: object
+        properties:
+          latitude: 
+            type: decimal
+            example: 51.564543
+          longitude:
+            type: decimal
+            example: -101.895309
+
       disruption:
         type: string
         example: "Local Service Disruptions"

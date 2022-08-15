@@ -11,6 +11,7 @@ beautifulsoup4 = "*"
 requests = "*"
 flask-caching = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
 black = "*"

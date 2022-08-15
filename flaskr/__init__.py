@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timedelta, timezone
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_caching import Cache
@@ -16,6 +17,9 @@ def create_app(test_config=None):
 
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    # Allow cross origin requests
+    CORS(app)
 
     app.config.from_mapping(
         SECRET_KEY="dev",
